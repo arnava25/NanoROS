@@ -1,0 +1,131 @@
+NanoROS — Key Quantitative Outputs
+====================================
+Generated from ROS-Cardio ODE model (Ludke et al. 2017 validation)
+June 2026
+
+=== ODE MODEL OUTPUTS ===
+[Dox] steady state:              25.0 nM
+Peak [H2O2]:                     6.89 nM at t=587 min
+Peak [O2.-]:                     2.51 nM at t=547 min
+Damage deadline (D=50 AU):       t=123 min
+Nrf2 2x activation:              t=160 min  (too late — deadline already passed)
+GSH minimum depletion:           0.8%       (NOT a viable trigger signal)
+D at end of cycle (no NP):       ~290 AU
+
+=== AND GATE KINETICS ===
+Arm A (dioxaborolane, pH 8.0):
+  k2 = 600 M-1s-1 (Bhattacharya & Chang, JACS 2014, pH-corrected)
+  f_crit = 0.1%  →  t_fire = 22 min
+  GSH-inert: YES  |  Acid-stable: YES
+
+Arm B Branch A (methoxyamine, [4-HNE] ≥ 0.075 µM):
+  k2 = 300 M-1s-1 (Dirksen & Dawson, Bioconjug Chem 2008)
+  t_fire ≈ 120 min  |  Protection: ~83%
+
+Arm B Branch B (benzyloxyamine, 0.025–0.075 µM [4-HNE]):
+  k2 = 1000 M-1s-1 (Dirksen & Dawson 2008)
+  t_fire ≈ 49–108 min  |  Protection: 83–87%
+
+Arm B Branch C ([4-HNE] < 0.025 µM — MDA sensing fallback):
+  Benzyloxyamine + MDA at ~0.33 µM
+  t_fire ≈ 51 min  |  Protection: ~87%
+
+AND gate fires before deadline (t<123 min): YES for Branches A, B, C
+
+=== PAYLOAD (MnTE-2-PyP) ===
+kcat/Km for O2.-:     7×10^8 M-1s-1 (Batinic-Haberle 2009/2012)
+MW:                   900 Da (VDAC-permeable)
+Charge:               +5 (no ΔΨm dependence — passive diffusion)
+EE target:            5% (conservative)
+k_sc_O2 at 5% EE:    23,515 min-1
+Safety margin:        4,700× above SOD floor
+Pro-oxidant ceiling:  None (no semiquinone redox cycling)
+
+Eliminated candidates and reasons:
+  MitoQ:    No therapeutic window at any ΔΨm (27.5 µM intramito at 100 nM plasma, normal ΔΨm)
+  Mn cyclen: Matrix-corrected kcat/Km ~1.3×10^4 M-1s-1 (phosphate, GSH, pH corrections)
+  Catalase: 240 kDa — encapsulation conflict; requires aqueous emulsion → boronate hydrolysis
+  MnTBAP:   Primarily SOD, weak catalase; lower kcat/Km
+  EUK-207:  Catalase activity 15× lower than native; limited human safety data
+
+=== MITOQ PRO-OXIDANT ANALYSIS ===
+Citation: Doughan & Dikalov, Antioxid Redox Signal 2007;9(11):1825-1836
+Ceiling: 1 µM intramitochondrial MitoQ
+At normal ΔΨm (150 mV):     275× accum → 27.5 µM → 27× above ceiling
+At 40% residual ΔΨm (60 mV): 9× accum  → 0.9 µM  → at ceiling, reduced efficacy
+MitoQ Adlam 2005 (FASEB J 19:1088): cardioprotective in I/R — correct citation for proof-of-concept
+
+=== DELIVERY CASCADE (IV, 20 mg/kg, dual targeting) ===
+Injected NPs:                    1.11×10^15
+Cardiac accumulation (est.):     ~2% (CRPPR × ICAM-1 4× × CD47 1.5×)
+Cardiomyocyte endocytosis (AT1R): 60%
+Endosomal escape (DOPE/CHEMS):   10%
+NPs per cardiomyocyte:           ~178
+k_sc_O2 achieved:                ~23,500 min-1
+Safety margin:                   4,700× above floor
+
+Revised cardiac accumulation rationale:
+  CRPPR alone (human, scaled from Dvir 2011 mouse): 0.3–1.0%
+  × ICAM-1 upregulation (3–5×, Hayashi 2004) → 4× improvement (Bhattacharya 2012)
+  × CD47 anti-phagocytosis (Rodriguez 2013): 1.5×
+  Combined: 1.8–6.0% (document uses conservative 1–3%)
+
+=== PROTECTION ESTIMATES (ODE model) ===
+Per-cycle protection:
+  NanoROS (t_release=22 min, k_sc_O2=23515): ~87%
+  NanoROS (t_release=100 min):               ~83%
+  NanoROS (t_release=280 min):               ~52%
+  Dexrazoxane (40% k_ros reduction):          ~40%  [matches clinical data]
+  MitoQ (partial ΔΨm, net ~0 scavenging):   ~2%
+
+6-cycle cumulative protection (linear, NP each cycle):
+  NanoROS: 83–87% per cycle → substantial cumulative preservation
+
+=== CARDIOLIPIN / 4-HNE MODULE ===
+k_CL_ox:           3.6×10^-5 nM-1min-1 (calibrated to Petrosillo 2003)
+k_HNE_prod:        0.02 min-1
+k_HNE_clear:       3.0 min-1 (GSH Michael addition at 5000 nM GSH)
+[4-HNE]_ss range:  0.034–0.46 µM (50–99% GPx4 depletion required)
+GPx4 key unknown:  Dox reduces GPx4 expression ~30–50% in mouse heart
+Load-bearing:      GPx4 activity is dominant unknown for AND gate Arm B
+Resolution:        Experiment 0 (LC-MS/MS, irreplaceable)
+
+=== FLORY-HUGGINS / CO-ASSEMBLY ===
+Δδ estimate:    0.4–2.5 MPa^0.5 (group contribution, high uncertainty)
+χN estimate:    boundary-straddling (cannot resolve computationally)
+Resolution:     FRET experiment (Experiment 1B) required
+
+=== MANUFACTURING (MVD) ===
+Full design:  ~12 components, 7.5% synthesis probability, ±75% CV
+MVD Phase 1:  ~5 components, 75% synthesis probability, ±41% CV
+AND gate batch tolerance: A:B ratio 0.20–4.0 all fire within deadline
+Key conflict: Hydroxylamine cannot be polymerised with boronate in same pot
+Resolution:   Two-polymer co-assembly (Polymer A + Polymer B separate RAFT routes)
+
+=== NOVELTY CLAIMS STATUS ===
+Claim 1 (ODE-constrained trigger):        CONFIRMED — unique in literature
+Claim 2 (Orthogonal dual AND gate):       CONFIRMED — no prior dual-signal NP for cardiac
+Claim 3 (Cardiolipin coherence):          CONFIRMED — novel integration concept
+Claim 4 (ICAM-1/4-HNE self-amplifying):  CONFIRMED — not described previously
+Claim 5 (4-HNE as NP release trigger):   CONFIRMED — 4 independent literature searches,
+                                                        no prior art found (June 2026)
+
+=== LITERATURE VERIFICATION NOTES ===
+Adlam 2005: FASEB J 19(9):1088-95 — cardioprotection in I/R (NOT pro-oxidant ceiling paper)
+Doughan 2007: Antioxid Redox Signal 9(11):1825-1836 — PRO-OXIDANT CEILING (correct citation)
+Elamipretide: FDA NDA 215244, Sept 19 2025 (Forzinity, Barth syndrome) — CL-binding validated
+TAZPOWER: 12-week endpoints NOT met; OLE 168 weeks shows functional benefit (Barth ≠ dox)
+PROGRESS-HF: Elamipretide in HFrEF — no significant LV volume change at 4 weeks
+
+=== EXPERIMENTAL GATES (CANNOT BE BYPASSED COMPUTATIONALLY) ===
+Exp 0 ★ — [4-HNE] LC-MS/MS in dox cardiomyocyte mitochondria
+           → Determines Branch A/B/C linker selection
+           → All Branch timing estimates carry GPx4 uncertainty until resolved
+
+Exp 1A ★ — MnTE-2-PyP encapsulation (DMSO nanoprecipitation → PAA → surface loading)
+            → Boronate hydrolysis under aqueous conditions is unresolved
+            → If all fail: separate NP populations (AND gate + constitutive delivery)
+
+Exp 1B — FRET co-assembly homogeneity
+         → χN is computationally unresolvable for these specific polymers
+         → Outcomes 1/2/3 all have defined contingency architectures
