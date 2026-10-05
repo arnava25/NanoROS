@@ -48,19 +48,19 @@ The following appeared in the June 2026 README and specification and should not 
 
 Early-phase goodness of fit improved from R² = −0.30 to R² = 0.94 (RMSE 14.0% → 3.0%) after calibration. `k_ros` and `k_in` are structurally non-identifiable from normalized H2O2 data. `k_chronic_gsh` is the second most influential driver of cycle-6 damage (S_T = 0.19) despite being a weakly constrained parameter.
 
-Note on provenance: `parameters_calibrated.py` holds the calibrated overlay (`k_cl` = 0.0267, `k_gsh` = 3.0) and corresponds to Table 1. The uncertainty-propagation script runs on the uncalibrated BASE (`k_cl` = 0.02, `k_gsh` = 2.0), so UQ distributions are centered on the wrong nominal. Re-centering is queued for the next revision.
+Note on provenance: the calibrated overlay (`k_cl` = 0.0267, `k_gsh` = 3.0) lives in `ros-ode/revision-2026-07-28/parameters_calibrated.py` and corresponds to Table 1 of the manuscript. The uncertainty-propagation run (`sensitivity_uncertainty.py`, same directory) is centered on the uncalibrated BASE (`k_cl` = 0.02, `k_gsh` = 2.0), so UQ distributions sit on the wrong nominal. Re-centering is queued for the next revision.
 
 ### Two-compartment model
 
-`ros_core_2c.py` extends the frozen single-compartment model into separate mitochondrial and cytosolic pools. It passes two structural self-tests: mass conservation under transport-only (drift 7.6e-16) and exact reduction to the frozen `ros_core_paper.acute_run(BASE)` (H2O2 error 1.4e-6). It is a representational gain, not a fit improvement.
+`ros-ode/ros_core_2c.py` extends the frozen single-compartment model (`ros-ode/ros_core_paper.py`) into separate mitochondrial and cytosolic pools. It passes two structural self-tests: mass conservation under transport-only (drift 7.6e-16) and exact reduction to `ros_core_paper.acute_run(BASE)` (H2O2 error 1.4e-6). It is a representational gain, not a fit improvement.
 
 Three results from it change the design:
 
-**1. H2O2-gradient mitochondrial targeting is dead.** Anchoring transbilayer transport from inner-membrane permeability (~1e-3 cm/s) and cardiac cristae area-to-volume (~5e5 cm⁻¹) gives an effective P_h2o2 ≈ 1e4 min⁻¹ — roughly 1e4 above the well-mixed crossover, equilibrating in ~2 ms. H2O2 carries no matrix/cytosol concentration advantage. The targeting rationale cannot rest on it.
+**1. H2O2-gradient mitochondrial targeting is dead.** Anchoring transbilayer transport from inner-membrane permeability (~1e-3 cm/s) and cardiac cristae area-to-volume (~5e5 cm⁻¹) gives an effective P_h2o2 ≈ 1e4 min⁻¹ — roughly 1e4 above the well-mixed crossover, equilibrating in ~2 ms. H2O2 carries no matrix/cytosol concentration advantage. The targeting rationale cannot rest on it. (`p_h2o2_sweep.py`)
 
 **2. Superoxide is the only genuinely matrix-confined species** (membrane permeability < 1e-7 cm/s). The targeting argument is therefore about payload *access*, not gradient exploitation.
 
-**3. The payload decision is open, not locked.** In the current parameterization ~97% of chronic matrix damage is GSH-import-limited rather than superoxide-driven, so a superoxide scavenger returns ~3% protection even at 400-fold mitochondrial enrichment. Defining φ as the fraction of baseline irreversible matrix damage attributable to the superoxide pathway, the crossover between an SOD mimetic and a matrix-targeted GSH restorer sits at φ ≈ 0.5, insensitive to enrichment level. The model default sits at φ ≈ 0.02. The two payload classes are complementary, not substitutable.
+**3. The payload decision is open, not locked.** In the current parameterization ~97% of chronic matrix damage is GSH-import-limited rather than superoxide-driven, so a superoxide scavenger returns ~3% protection even at 400-fold mitochondrial enrichment. Defining φ as the fraction of baseline irreversible matrix damage attributable to the superoxide pathway, the crossover between an SOD mimetic and a matrix-targeted GSH restorer sits at φ ≈ 0.5, insensitive to enrichment level. The model default sits at φ ≈ 0.02. The two payload classes are complementary, not substitutable. (`superoxide_targeting.py`)
 
 A 24-hour diagnostic ruled out GSH exhaustion as the cause of late divergence from Ludke 2017 (GSH recovers to ~101% by 24 h via Nrf2). The structural gap is a missing feed-forward damage-to-ROS term, not a spatial-averaging error.
 
@@ -186,12 +186,9 @@ NanoROS/
 ├── docs/
 │   ├── NanoROS_Research_Specification.pdf  <- full design document (June 2026, see Status)
 │   └── key_outputs.txt
-├── model/
+├── model/                                  <- NanoROS design model
 │   ├── parameters.py                       <- all parameters with citations
-│   ├── parameters_calibrated.py            <- calibrated overlay; corresponds to Table 1
 │   ├── ode_core.py                         <- ODE system + run() interface
-│   ├── ros_core_paper.py                   <- frozen single-compartment module (manuscript)
-│   ├── ros_core_2c.py                      <- two-compartment mito/cyto scaffold
 │   ├── ros_model_extended.py               <- extended model: CL-OOH and 4-HNE
 │   └── legacy/                             <- original exploratory scripts
 │       ├── ros_model.py
@@ -201,14 +198,25 @@ NanoROS/
 │       └── validation_plot.py
 ├── analysis/
 │   ├── linker_kinetics.py                  <- AND gate firing times + specificity table
-│   ├── batch_variability.py                <- delivery cascade + batch tolerance
-│   ├── sensitivity_uncertainty.py          <- Sobol / PRCC / full-parameter UQ
-│   └── calibration.py                      <- WLS calibration + profile likelihood
+│   └── batch_variability.py                <- delivery cascade + batch tolerance
+├── ros-ode/                                <- manuscript workstream (PONE-D-26-28903)
+│   ├── ros_core_paper.py                   <- frozen single-compartment module
+│   ├── ros_core_2c.py                      <- two-compartment mito/cyto scaffold
+│   ├── p_h2o2_sweep.py                     <- transbilayer H2O2 transport anchoring
+│   ├── superoxide_targeting.py             <- enrichment sweep + phi payload comparison
+│   └── revision-2026-07-28/                <- PLOS ONE revision analyses
+│       ├── parameters_calibrated.py        <- calibrated overlay (Table 1)
+│       ├── sensitivity_uncertainty.py      <- Sobol / PRCC / full-parameter UQ
+│       ├── calibration_report.txt
+│       └── revision_outputs.txt
 └── figures/
-    ├── fig1_validation.png
-    ├── fig2_sensitivity_contour.png
-    └── fig3_comparator.png
+    ├── fig1_validation.py / .png
+    ├── fig2_sensitivity.py / .png
+    ├── fig3_comparator.py / .png
+    └── (exploratory figure outputs)
 ```
+
+Manuscript documents and submission materials are kept local and are not tracked here; the frozen code state for the submitted revision is archived at the Zenodo DOI above.
 
 ### Legacy scripts
 
