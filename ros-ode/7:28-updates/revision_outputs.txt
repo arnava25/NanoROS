@@ -1,0 +1,72 @@
+
+[Sobol: peak H2O2]  N=256  evals=4352  time=21s
+  param                  S1       ST   ST_conf
+  k_ros               0.370    0.458     0.112
+  k_gsh               0.169    0.225     0.065
+  k_cl                0.131    0.218     0.064
+  k_in                0.154    0.197     0.060
+  k_gshsyn_basal     -0.000    0.003     0.001
+  Km_gsh             -0.001    0.003     0.001
+  k_gsh_turn         -0.000    0.002     0.001
+  k_nrf2             -0.000    0.000     0.000
+  k_gshsyn           -0.000    0.000     0.000
+  k_ox                0.000    0.000     0.000
+  k_nrf2deg           0.000    0.000     0.000
+  k_syn              -0.000    0.000     0.000
+  k_gshdeg           -0.000    0.000     0.000
+  k_deg              -0.000    0.000     0.000
+  k_sod               0.000    0.000     0.000
+  sum(ST)-sum(S1) [interaction load] = 0.285
+  saved figure_sobol_h2o2.png
+
+[Sobol: cycle-6 irreversible damage]  N=128  evals=2432  time=79s
+  param                  S1       ST   ST_conf
+  k_ros               0.199    0.413     0.252
+  k_chronic_gsh       0.044    0.186     0.155
+  k_in                0.029    0.156     0.131
+  k_nrf2              0.102    0.113     0.102
+  k_gsh               0.016    0.102     0.070
+  k_nrf2deg           0.011    0.083     0.098
+  k_gsh_turn          0.013    0.075     0.075
+  k_gshdeg            0.123    0.075     0.048
+  k_cl               -0.004    0.068     0.063
+  k_gshsyn            0.030    0.048     0.034
+  k_syn              -0.009    0.024     0.019
+  k_ox                0.032    0.024     0.014
+  k_damage_chronic    0.033    0.023     0.017
+  k_deg              -0.001    0.001     0.001
+  k_gshsyn_basal      0.000    0.000     0.000
+  Km_gsh              0.001    0.000     0.000
+  k_sod               0.000    0.000     0.000
+  sum(ST)-sum(S1) [interaction load] = 0.770
+  saved figure_sobol_damage.png
+
+[PRCC: cycle-6 irreversible damage]  N=1200  time=39s  (df=1181)
+  param                  PRCC          p
+  k_ros                 0.893   0.00e+00
+  k_gsh                -0.773  5.88e-236
+  k_in                  0.773  6.23e-236
+  k_cl                 -0.707  4.31e-180
+  k_damage_chronic      0.702  3.22e-176
+  k_gshdeg              0.660  6.06e-149
+  k_chronic_gsh         0.542   3.56e-91
+  k_nrf2               -0.434   1.90e-55
+  k_gshsyn             -0.392   1.08e-44
+  k_ox                 -0.386   2.19e-43
+  k_nrf2deg             0.219   2.41e-14
+  k_syn                 0.212   1.76e-13
+  Km_gsh                0.076   9.11e-03
+  k_gsh_turn           -0.062   3.29e-02
+  k_deg                -0.045   1.23e-01
+  k_gshsyn_basal       -0.043   1.38e-01
+  k_sod                -0.031   2.91e-01
+  saved figure_prcc_damage.png
+
+[UQ: cycle-6 protection, full 17-parameter uncertainty]  N=500  time=63s
+  sulforaphane : median  31.0%  90% CI [ 11.9,  60.8]  IQR [22.0, 43.6]
+  dexrazoxane  : median  62.4%  90% CI [ 51.8,  74.2]  IQR [59.3, 66.5]
+  combination  : median  74.6%  90% CI [ 65.1,  88.6]  IQR [70.0, 81.3]
+  baseline cycle-6 damage across sample: median 56.2 AU, range [7.8, 1117.7]
+  saved figure_uq_protection.png
+
+[UQ trajectory] saved figure_uq_trajectory.png
